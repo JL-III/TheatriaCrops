@@ -28,4 +28,25 @@ public class ListGenerators {
         return circleBlocks;
     }
 
+    public static List<Block> getRegionBlocks(Location location1, Location location2) {
+        List<Block> blocks = new ArrayList<Block>();
+
+        int x1 = location1.getBlockX();
+        int y1 = location1.getBlockY();
+        int z1 = location1.getBlockZ();
+
+        int x2 = location2.getBlockX();
+        int y2 = location2.getBlockY();
+        int z2 = location2.getBlockZ();
+
+        for(int x = x1; x <= x2; x++) {
+            for(int y = y1; y <= y2; y++) {
+                for(int z = z1; z <= z2; z++) {
+                    blocks.add(location1.getWorld().getBlockAt(x,y,z));
+                }
+            }
+        }
+        return blocks;
+    }
+
 }

@@ -13,7 +13,7 @@ public class CropGrowth implements Runnable{
     @Override
     public void run() {
         Location location = new Location(Bukkit.getWorld("world"), 10, 64, 10);
-        List<Block> blockList = ListGenerators.generateSphere(location, 10, false);
+        List<Block> blockList = ListGenerators.getRegionBlocks(new Location(location.getWorld(), 5, 62, 4), new Location(location.getWorld(), 17, 66, 11));
         Collections.shuffle(blockList);
         for (Block block : split(blockList)) {
             if (block.getType() == Material.WHEAT
