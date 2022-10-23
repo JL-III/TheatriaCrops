@@ -1,0 +1,5 @@
+name: TheatriaCrops
+version: '${project.version}'
+main: com.jliii.theatriacrops.TheatriaCrops
+api-version: 1.19
+description: Automatic regen of crops in spawn locations
