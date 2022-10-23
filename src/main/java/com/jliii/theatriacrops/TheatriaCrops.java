@@ -1,8 +1,10 @@
 package com.jliii.theatriacrops;
 
+import com.jliii.theatriacrops.commands.AdminCommands;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.units.qual.C;
+
+import java.util.Objects;
 
 public final class TheatriaCrops extends JavaPlugin {
 
@@ -14,7 +16,7 @@ public final class TheatriaCrops extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        Objects.requireNonNull(this.getCommand("crops")).setExecutor(new AdminCommands());
         Bukkit.getScheduler().runTaskTimer(this, this.cropGrowth, 10,200);
     }
 
