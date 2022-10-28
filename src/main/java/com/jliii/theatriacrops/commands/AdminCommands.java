@@ -35,14 +35,14 @@ public class AdminCommands implements CommandExecutor {
 
         }
         if ("cube".equalsIgnoreCase(args[0])) {
-            List<Block> blockList = ListGenerators.getRegionBlocks(new Location(player.getWorld(), 5, 62, 4), new Location(player.getWorld(), 17, 66, 11));
-            for (Block block : blockList) {
-                if (block.getType() == Material.SPONGE) {
-                    block.setType(Material.AIR);
-                }
-
-            }
-            return true;
+//            List<Block> blockList = ListGenerators.getRegionBlocks(new Location(player.getWorld(), 5, 62, 4), new Location(player.getWorld(), 17, 66, 11));
+//            for (Block block : blockList) {
+//                if (block.getType() == Material.SPONGE) {
+//                    block.setType(Material.AIR);
+//                }
+//
+//            }
+//            return true;
         }
 
         return false;

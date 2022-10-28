@@ -1,7 +1,9 @@
 package com.jliii.theatriacrops;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 
@@ -28,8 +30,8 @@ public class ListGenerators {
         return circleBlocks;
     }
 
-    public static List<Block> getRegionBlocks(Location location1, Location location2) {
-        List<Block> blocks = new ArrayList<Block>();
+    public static List<Location> getRegionBlocks(World world, Location location1, Location location2) {
+        List<Location> blockLocations = new ArrayList<>();
 
         int x1 = location1.getBlockX();
         int y1 = location1.getBlockY();
@@ -38,15 +40,25 @@ public class ListGenerators {
         int x2 = location2.getBlockX();
         int y2 = location2.getBlockY();
         int z2 = location2.getBlockZ();
-
         for(int x = x1; x <= x2; x++) {
             for(int y = y1; y <= y2; y++) {
                 for(int z = z1; z <= z2; z++) {
-                    blocks.add(location1.getWorld().getBlockAt(x,y,z));
+                    blockLocations.add(new Location(world, x, y, z));
+
                 }
             }
         }
-        return blocks;
+        return blockLocations;
+    }
+
+    public static <T> List<T> splitList(List<T> list) {
+        List<T> splitList = new ArrayList<T>();
+        int size = list.size();
+
+        for (int i = 0; i < size / 2; i++) {
+            splitList.add(list.get(i));
+        }
+        return splitList;
     }
 
 }

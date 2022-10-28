@@ -10,12 +10,31 @@ import java.util.List;
 
 public class CropGrowth implements Runnable{
 
+    List<Location> blockLocationList;
+
+    CropGrowth(List<Location> blockLocationList) {
+        this.blockLocationList = blockLocationList;
+    }
+
     @Override
     public void run() {
-        Location location = new Location(Bukkit.getWorld("world"), 10, 64, 10);
-        List<Block> blockList = ListGenerators.getRegionBlocks(new Location(location.getWorld(), 5, 62, 4), new Location(location.getWorld(), 17, 66, 11));
-        Collections.shuffle(blockList);
-        for (Block block : split(blockList)) {
+
+        Collections.shuffle(blockLocationList);
+        for (Location location : ListGenerators.splitList(blockLocationList)) {
+            Block block = location.getBlock();
+            Location blockAboveLoc = block.getLocation().add(0, 1, 0);
+            if (block.getType() == Material.DIRT && blockAboveLoc.getBlock().getType() == Material.AIR) {
+                block.setType(Material.FARMLAND);
+            }
+            if (block.getType() == Material.FARMLAND) {
+                if (blockAboveLoc.getBlock().getType() == Material.AIR) {
+                    blockAboveLoc.getBlock().setType(Material.WHEAT);
+                }
+            }
+        }
+
+        for (Location location : ListGenerators.splitList(blockLocationList)) {
+            Block block = location.getBlock();
             if (block.getType() == Material.WHEAT
                     && block.getBlockData() instanceof Ageable ageable
                     && ageable.getAge() < ageable.getMaximumAge()) {
@@ -27,13 +46,5 @@ public class CropGrowth implements Runnable{
         }
     }
 
-    public static List<Block> split(List<Block> list) {
-        List<Block> splitList = new ArrayList<>();
-        int size = list.size();
 
-        for (int i = 0; i < size / 2; i++) {
-            splitList.add(list.get(i));
-        }
-        return splitList;
-    }
 }
