@@ -1,20 +1,24 @@
 package com.jliii.theatriacrops;
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CropGrowth implements Runnable{
+public class CropGrowth implements Runnable, Listener {
 
     List<Location> blockLocationList;
 
     CropGrowth(List<Location> blockLocationList) {
         this.blockLocationList = blockLocationList;
     }
+
 
     @Override
     public void run() {
