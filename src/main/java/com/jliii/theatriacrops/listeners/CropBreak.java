@@ -1,10 +1,7 @@
 package com.jliii.theatriacrops.listeners;
 
-import com.jliii.theatriacrops.ListGenerators;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
