@@ -1,13 +1,9 @@
 package com.jliii.theatriacrops;
 
-import com.destroystokyo.paper.event.server.ServerTickStartEvent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

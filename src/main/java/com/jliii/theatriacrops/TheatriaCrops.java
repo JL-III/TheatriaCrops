@@ -2,7 +2,7 @@ package com.jliii.theatriacrops;
 
 import com.jliii.theatriacrops.commands.AdminCommands;
 import com.jliii.theatriacrops.listeners.CropBreak;
-import lombok.AllArgsConstructor;
+import com.jliii.theatriacrops.listeners.MagicPond;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -19,6 +19,7 @@ public final class TheatriaCrops extends JavaPlugin {
     public void onEnable() {
         Objects.requireNonNull(this.getCommand("crops")).setExecutor(new AdminCommands());
         Bukkit.getScheduler().runTaskTimer(this, new CropGrowth(getLocationList()), 10,200);
+        Bukkit.getPluginManager().registerEvents(new MagicPond(getLocationList(), this), this);
         Bukkit.getPluginManager().registerEvents(new CropBreak(getLocationList()), this);
     }
 

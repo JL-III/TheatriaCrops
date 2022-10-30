@@ -37,7 +37,6 @@ public class CropBreak implements Listener {
                     event.setCancelled(true);
                 }
             }
-
         }
     }
 }
