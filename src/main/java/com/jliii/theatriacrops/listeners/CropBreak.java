@@ -5,7 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -37,6 +39,15 @@ public class CropBreak implements Listener {
                     event.setCancelled(true);
                 }
             }
+        }
+    }
+
+    @EventHandler
+    public static void OnInteract(PlayerInteractEvent event) {
+        if (!blockLocationList.contains(event.getPlayer().getLocation().getBlock().getLocation())) return;
+        switch (event.getAction()) {
+            case RIGHT_CLICK_BLOCK, PHYSICAL -> event.setCancelled(true);
+            default -> {}
         }
     }
 }

@@ -4,6 +4,7 @@ import com.jliii.theatriacrops.TheatriaCrops;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -30,30 +31,41 @@ public class MagicPond implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void OnFishEvent(PlayerFishEvent event) {
-        if (pondLocation.contains(event.getPlayer().getLocation().getBlock().getLocation())) {
-            World world = event.getPlayer().getWorld();
-            if (event.getCaught() != null && (event.getState() == PlayerFishEvent.State.CAUGHT_FISH)) {
+        World world = event.getPlayer().getWorld();
+        if (event.getCaught() != null && (event.getState() == PlayerFishEvent.State.CAUGHT_FISH)) {
+            Player player = event.getPlayer();
+            if (isExploitingFishing(event.getHook().getLocation().toVector(), player)) {
+                console.sendMessage(player.getName() + " was stopped for overfishing.");
+                event.getCaught().remove();
+                event.setExpToDrop(0);
+                player.sendActionBar(ChatColor.RED + "No more fish here, try casting your rod 3 blocks away.");
+                return;
+            }
+            if (pondLocation.contains(event.getHook().getLocation().getBlock().getLocation())) {
                 Item caughtItem = (Item) event.getCaught();
                 new BukkitRunnable() {
                     public void run() {
-                        //We are using the exact same logic McMMO uses inside of their plugin, the detection is happening in parallel,
-                        //could not find a way to hook into mcmmo in any effective manner and see that their plugin is cancelling drops
-                        //because of over fishing.
-                        if (isExploitingFishing(event.getHook().getLocation().toVector())) {
-                            console.sendMessage(event.getPlayer().getName() + " was stopped for overfishing.");
-                            event.getPlayer().sendActionBar(ChatColor.YELLOW + "No extra fish here, try moving 3 blocks away.");
-                            return;
-                        }
                         if (dropTropical()) {
                             world.dropItem(caughtItem.getLocation(), new ItemStack(Material.TROPICAL_FISH)).setVelocity(caughtItem.getVelocity());
-                            event.getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.ITALIC +"The Oracle blesses you with a tropical fish!");
+                            player.sendActionBar(ChatColor.YELLOW + "" + ChatColor.ITALIC + "The Oracle blesses you with a tropical fish!");
                         }
                         world.dropItem(caughtItem.getLocation(), new ItemStack(caughtItem.getItemStack())).setVelocity(caughtItem.getVelocity());
                         world.spawnParticle(Particle.VILLAGER_HAPPY, event.getHook().getLocation().add(0, 1.5, 0), 5);
                         event.getCaught().setGlowing(true);
                     }
                 }.runTaskLater(theatriaCrops, 5);
-
+            } else {
+                Item caughtItem = (Item) event.getCaught();
+                event.setExpToDrop(0);
+                if (caughtItem.getItemStack().getType() == Material.PUFFERFISH || caughtItem.getItemStack().getType() == Material.TROPICAL_FISH) {
+                    event.getCaught().remove();
+                    player.sendActionBar(ChatColor.YELLOW + "These waters are bad for fishing, try fishing at the magic pond...");
+                    new BukkitRunnable() {
+                        public void run() {
+                            world.dropItem(caughtItem.getLocation(), new ItemStack(Material.COD)).setVelocity(caughtItem.getVelocity());
+                        }
+                    }.runTaskLater(theatriaCrops, 5);
+                }
             }
         }
     }
@@ -68,8 +80,8 @@ public class MagicPond implements Listener {
     }
 
     //These methods are using hardcoded values and will need to match the config settings in the main server
-    public boolean isExploitingFishing(Vector centerOfCastVector) {
-
+    public boolean isExploitingFishing(Vector centerOfCastVector, Player player) {
+        int overFishLimit = 15;
         BoundingBox newCastBoundingBox = makeBoundingBox(centerOfCastVector);
 
         boolean sameTarget = lastFishingBoundingBox != null && lastFishingBoundingBox.overlaps(newCastBoundingBox);
@@ -78,11 +90,13 @@ public class MagicPond implements Listener {
             fishCaughtCounter++;
         else
             fishCaughtCounter = 1;
-
+        if(fishCaughtCounter + 1 == overFishLimit)
+        {
+            player.sendMessage(ChatColor.GRAY + "You sense there are less fish in this area...");
+        }
         //If the new bounding box does not intersect with the old one, then update our bounding box reference
         if(!sameTarget)
             lastFishingBoundingBox = newCastBoundingBox;
-        int overFishLimit = 10;
         return sameTarget && fishCaughtCounter >= overFishLimit;
     }
 
